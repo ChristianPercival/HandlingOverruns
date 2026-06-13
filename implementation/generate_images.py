@@ -3,8 +3,8 @@ import cv2
 import numpy as np
 import random
 
-IMAGE_WIDTH = 640
-IMAGE_HEIGHT = 480
+IMAGE_WIDTH = 1920
+IMAGE_HEIGHT = 1080
 
 OUTPUT_DIRS = {
     "easy": "images/easy",
