@@ -1,0 +1,171 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\title{Milestone 3: Critical Evaluation and Transfer}
+\author{Christian Percival}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Purpose}
+
+\begin{itemize}
+    \item This milestone evaluates the strengths, limitations, risks, assumptions, and applicability of overrun handling.
+    \item The goal is not to say whether the paper is simply good or bad.
+    \item The goal is to understand where the approach works, where it may fail, and how it transfers to realistic embedded systems.
+\end{itemize}
+
+\section*{Strengths of the Approach}
+
+\begin{itemize}
+    \item Handles variable execution times more efficiently than pure WCET scheduling.
+    \item Allows higher normal-case task frequencies.
+    \item Improves control performance when normal execution time is much smaller than WCET.
+    \item Uses bandwidth reservation to limit interference between tasks.
+    \item Provides temporal isolation.
+    \item Maintains hard real-time guarantees under bounded worst-case assumptions.
+    \item CBShd improves standard CBS by handling partial overruns more accurately.
+    \item The approach is strongly motivated by realistic control applications such as visual tracking.
+\end{itemize}
+
+\section*{Limitations}
+
+\begin{itemize}
+    \item Requires a known or bounded WCET.
+    \item WCET estimation is difficult on modern processors.
+    \item Cache, interrupts, operating system behavior, and background processes can affect timing.
+    \item Requires knowledge of normal computation time.
+    \item Normal computation time may change depending on input data.
+    \item Remaining computation time may be difficult to estimate accurately.
+    \item Server-based scheduling introduces runtime overhead.
+    \item Implementation requires real-time scheduling support.
+    \item A simple desktop operating system cannot provide the same guarantees as a real-time kernel.
+\end{itemize}
+
+\section*{Risks and Hidden Assumptions}
+
+\begin{itemize}
+    \item If WCET is underestimated, hard deadlines may still be missed.
+    \item If normal execution time is underestimated, overruns may occur too often.
+    \item If server budget is too small, overhead may become too high.
+    \item If server budget is too large, overrun handling becomes less precise.
+    \item If a task overruns while holding a shared resource, blocking problems can occur.
+    \item The theory assumes bounded behavior, but real image processing can have input-dependent complexity.
+\end{itemize}
+
+\section*{Runtime Implications}
+
+\begin{itemize}
+    \item Budget management costs CPU time.
+    \item Deadline postponement costs CPU time.
+    \item Smaller chunks lead to more frequent budget exhaustion.
+    \item More frequent budget exhaustion leads to more scheduler overhead.
+    \item The paper reports that overhead must be considered when choosing server budget.
+\end{itemize}
+
+\section*{Memory and Scalability Implications}
+
+\begin{itemize}
+    \item Each task needs server state:
+    \begin{itemize}
+        \item current budget,
+        \item server period,
+        \item current deadline,
+        \item remaining computation estimate.
+    \end{itemize}
+    \item Memory overhead is probably small for a small number of tasks.
+    \item Analysis becomes more complex as the number of tasks increases.
+    \item Resource sharing makes the analysis more complex.
+    \item More tasks mean more possible interactions and more scheduling decisions.
+\end{itemize}
+
+\section*{Suitable Application Examples}
+
+\begin{itemize}
+    \item Robotic visual tracking:
+    \begin{itemize}
+        \item normal case: object found quickly,
+        \item overrun case: larger search region needed.
+    \end{itemize}
+    \item Radar tracking:
+    \begin{itemize}
+        \item normal case: target found near predicted position,
+        \item overrun case: wider search required.
+    \end{itemize}
+    \item Sensor fusion:
+    \begin{itemize}
+        \item normal case: simple sensor update,
+        \item overrun case: additional filtering or correction required.
+    \end{itemize}
+    \item Autonomous systems:
+    \begin{itemize}
+        \item normal case: predictable environment,
+        \item overrun case: unexpected obstacle or uncertain sensor data.
+    \end{itemize}
+\end{itemize}
+
+\section*{Unsuitable or Problematic Application Examples}
+
+\begin{itemize}
+    \item Systems where WCET cannot be bounded realistically.
+    \item Systems where tasks must not be delayed after an overrun.
+    \item Systems with extremely limited processor power where server overhead is too expensive.
+    \item Systems where object detection uses complex AI models with highly unpredictable execution time.
+    \item Systems where shared resources are held for long unpredictable times.
+    \item Very simple microcontroller applications where fixed WCET scheduling is already sufficient.
+\end{itemize}
+
+\section*{Transfer to Student Prototype}
+
+\begin{itemize}
+    \item A full real-time kernel implementation is probably too large for this seminar.
+    \item A controlled simulation is more realistic.
+    \item The prototype can demonstrate:
+    \begin{itemize}
+        \item normal execution time,
+        \item occasional overruns,
+        \item WCET-based inefficiency,
+        \item deadline misses without overrun handling,
+        \item improvement using simplified budget/deadline handling.
+    \end{itemize}
+    \item Python and OpenCV can be used for the demonstration.
+    \item Synthetic images can be generated to control easy, medium, hard, and worst-case inputs.
+\end{itemize}
+
+\section*{Possible Extensions}
+
+\begin{itemize}
+    \item Implement a simple image-processing overrun demo.
+    \item Compare WCET-based scheduling, normal-budget scheduling, and simplified overrun handling.
+    \item Add plots:
+    \begin{itemize}
+        \item execution time per frame,
+        \item deadline misses per strategy,
+        \item CPU utilization per strategy,
+        \item average frequency per strategy.
+    \end{itemize}
+    \item Later extension:
+    \begin{itemize}
+        \item run the same experiment on Raspberry Pi,
+        \item compare desktop timing and embedded Linux timing,
+        \item measure timing jitter.
+    \end{itemize}
+\end{itemize}
+
+\section*{Critical Conclusion}
+
+\begin{itemize}
+    \item The approach is strong because it addresses a real weakness of WCET-only scheduling.
+    \item It is especially useful when normal execution time is much smaller than WCET.
+    \item It is less useful when WCET is close to normal execution time.
+    \item The main practical challenge is accurate timing estimation and implementation overhead.
+    \item For the seminar, a simplified prototype is suitable as a demonstration, but it should not be presented as a full real-time scheduler.
+\end{itemize}
+
+\end{document}

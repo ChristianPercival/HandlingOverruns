@@ -1,0 +1,257 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\title{Milestone 2: Scientific Contextualization and Tradeoff Analysis}
+\author{Christian Percival}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Purpose}
+
+\begin{itemize}
+    \item This milestone places the main paper in the larger real-time systems context.
+    \item The goal is not only to summarize related work.
+    \item The goal is to compare assumptions, approaches, and tradeoffs.
+\end{itemize}
+
+\section*{Main Approach from the Assigned Paper}
+
+\begin{itemize}
+    \item The paper combines:
+    \begin{itemize}
+        \item control performance optimization,
+        \item schedulability analysis,
+        \item rate adaptation,
+        \item Constant Bandwidth Server scheduling,
+        \item overrun handling.
+    \end{itemize}
+    \item The goal is to improve control performance during normal execution.
+    \item The system must still guarantee hard deadlines when worst-case execution occurs.
+\end{itemize}
+
+\section*{Related Approach 1: WCET-Based Scheduling}
+
+\begin{itemize}
+    \item Every task is scheduled using its WCET.
+    \item Advantage:
+    \begin{itemize}
+        \item simple to reason about,
+        \item safe if WCET estimates are correct,
+        \item strong predictability.
+    \end{itemize}
+    \item Disadvantage:
+    \begin{itemize}
+        \item pessimistic,
+        \item wastes CPU time when actual execution time is much lower than WCET,
+        \item can reduce sampling frequency in control systems.
+    \end{itemize}
+    \item Relation to topic:
+    \begin{itemize}
+        \item This is the baseline approach that overrun handling tries to improve.
+    \end{itemize}
+\end{itemize}
+
+\section*{Related Approach 2: Normal-Time Scheduling Without Protection}
+
+\begin{itemize}
+    \item Tasks are scheduled based on normal or average execution time.
+    \item Advantage:
+    \begin{itemize}
+        \item better average CPU utilization,
+        \item higher task frequency,
+        \item better normal-case control performance.
+    \end{itemize}
+    \item Disadvantage:
+    \begin{itemize}
+        \item unsafe when the task exceeds its expected time,
+        \item overruns can delay other tasks,
+        \item hard deadlines can be missed.
+    \end{itemize}
+    \item Relation to topic:
+    \begin{itemize}
+        \item This shows why overrun handling is needed.
+    \end{itemize}
+\end{itemize}
+
+\section*{Related Approach 3: Constant Bandwidth Server}
+
+\begin{itemize}
+    \item CBS assigns a budget $Q_s$ and period $T_s$ to a task.
+    \item Bandwidth:
+    \[
+        U_s = \frac{Q_s}{T_s}
+    \]
+    \item Advantage:
+    \begin{itemize}
+        \item provides temporal isolation,
+        \item limits how much CPU time a task can consume,
+        \item useful for variable execution time tasks.
+    \end{itemize}
+    \item Disadvantage:
+    \begin{itemize}
+        \item introduces scheduling overhead,
+        \item standard CBS may postpone deadlines too far,
+        \item hard-deadline guarantees require careful analysis.
+    \end{itemize}
+    \item Relation to topic:
+    \begin{itemize}
+        \item CBS is the main server mechanism used as the basis for overrun management.
+    \end{itemize}
+\end{itemize}
+
+\section*{Related Approach 4: CBShd}
+
+\begin{itemize}
+    \item CBShd is an extension of CBS for hard-deadline tasks.
+    \item It considers the remaining computation time.
+    \item Advantage:
+    \begin{itemize}
+        \item handles partial overruns more efficiently,
+        \item avoids unnecessary large deadline postponements,
+        \item improves responsiveness.
+    \end{itemize}
+    \item Disadvantage:
+    \begin{itemize}
+        \item requires estimating remaining computation time,
+        \item still introduces runtime overhead,
+        \item implementation is more complex than simple WCET scheduling.
+    \end{itemize}
+\end{itemize}
+
+\section*{Related Approach 5: Resource Sharing Protocols}
+
+\begin{itemize}
+    \item Real tasks may share resources such as:
+    \begin{itemize}
+        \item memory buffers,
+        \item sensors,
+        \item communication buses,
+        \item hardware peripherals.
+    \end{itemize}
+    \item Shared resources can cause blocking.
+    \item The Stack Resource Policy can be used to bound blocking times.
+    \item Tradeoff:
+    \begin{itemize}
+        \item resource protocols improve predictability,
+        \item but increase analysis complexity.
+    \end{itemize}
+\end{itemize}
+
+\section*{Tradeoff: Safety vs Efficiency}
+
+\begin{itemize}
+    \item WCET-only scheduling:
+    \begin{itemize}
+        \item high safety,
+        \item low efficiency if WCET is rare.
+    \end{itemize}
+    \item Normal-time scheduling:
+    \begin{itemize}
+        \item high efficiency,
+        \item unsafe without overrun protection.
+    \end{itemize}
+    \item CBS/CBShd:
+    \begin{itemize}
+        \item tries to balance both,
+        \item improves efficiency while preserving bounded interference.
+    \end{itemize}
+\end{itemize}
+
+\section*{Tradeoff: Precision vs Runtime Overhead}
+
+\begin{itemize}
+    \item Small server budget:
+    \begin{itemize}
+        \item more precise overrun handling,
+        \item more frequent deadline updates,
+        \item higher overhead.
+    \end{itemize}
+    \item Large server budget:
+    \begin{itemize}
+        \item lower overhead,
+        \item less precise handling of small overruns.
+    \end{itemize}
+\end{itemize}
+
+\section*{Tradeoff: Offline Guarantees vs Online Adaptation}
+
+\begin{itemize}
+    \item Offline analysis:
+    \begin{itemize}
+        \item checks schedulability before runtime,
+        \item provides stronger guarantees.
+    \end{itemize}
+    \item Online adaptation:
+    \begin{itemize}
+        \item reacts to actual runtime behavior,
+        \item improves flexibility,
+        \item harder to guarantee.
+    \end{itemize}
+    \item The assigned paper combines both:
+    \begin{itemize}
+        \item offline guarantees using WCET,
+        \item online overrun handling through server-based scheduling.
+    \end{itemize}
+\end{itemize}
+
+\section*{Embedded Systems Consequences}
+
+\begin{itemize}
+    \item The approach is relevant for embedded systems with variable workloads.
+    \item Good fit:
+    \begin{itemize}
+        \item robotics,
+        \item sensor processing,
+        \item visual tracking,
+        \item radar tracking,
+        \item autonomous systems.
+    \end{itemize}
+    \item Challenges:
+    \begin{itemize}
+        \item WCET measurement,
+        \item scheduler overhead,
+        \item limited CPU resources,
+        \item resource sharing,
+        \item implementation on Linux or microcontrollers.
+    \end{itemize}
+\end{itemize}
+
+\section*{Selected References and Why They Are Relevant}
+
+\begin{itemize}
+    \item Caccamo, Buttazzo, Sha:
+    \begin{itemize}
+        \item main paper,
+        \item rate adaptation,
+        \item overrun handling,
+        \item CBShd.
+    \end{itemize}
+    \item Buttazzo book:
+    \begin{itemize}
+        \item official background,
+        \item real-time scheduling,
+        \item overload handling,
+        \item resource reservations.
+    \end{itemize}
+    \item Abeni and Buttazzo:
+    \begin{itemize}
+        \item original CBS reference.
+    \end{itemize}
+    \item Liu and Layland:
+    \begin{itemize}
+        \item foundational EDF and real-time scheduling theory.
+    \end{itemize}
+    \item Baker:
+    \begin{itemize}
+        \item Stack Resource Policy and resource sharing.
+    \end{itemize}
+\end{itemize}
+
+\end{document}

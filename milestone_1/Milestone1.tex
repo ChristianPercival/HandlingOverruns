@@ -1,0 +1,210 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\title{Milestone 1: Technical Understanding and Research Framing}
+\author{Christian Percival}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Topic}
+
+\begin{itemize}
+    \item Seminar topic: Handling execution overruns in hard real-time control systems.
+    \item Main reference paper:
+    \begin{itemize}
+        \item M. Caccamo, G. Buttazzo, and L. Sha, ``Handling Execution Overruns in Hard Real-Time Control Systems,'' IEEE Transactions on Computers, 2002.
+    \end{itemize}
+    \item Official background reference:
+    \begin{itemize}
+        \item G. Buttazzo, \textit{Hard Real-Time Computing Systems: Predictable Scheduling Algorithms and Applications}, 4th ed., Springer, 2024.
+    \end{itemize}
+\end{itemize}
+
+\section*{Problem Statement}
+
+\begin{itemize}
+    \item Hard real-time systems must complete tasks before their deadlines.
+    \item A result that is correct but produced too late can still be wrong in a hard real-time system.
+    \item Classical scheduling often uses the worst-case execution time (WCET).
+    \item WCET-based scheduling is safe, but often inefficient.
+    \item Many tasks usually execute much faster than their WCET.
+    \item The problem is how to use the processor efficiently in normal cases while still remaining safe when worst-case execution happens.
+\end{itemize}
+
+\section*{What is an Execution Overrun?}
+
+\begin{itemize}
+    \item An execution overrun happens when a task executes longer than its expected or reserved execution time.
+    \item It does not mean that the task finishes earlier than WCET.
+    \item Finishing earlier than WCET only means that reserved processor time may be unused.
+    \item In the main paper, the normal computation time is denoted as:
+    \[
+        c_i^n
+    \]
+    \item The worst-case execution time is denoted as:
+    \[
+        WCET_i
+    \]
+    \item An overrun occurs when:
+    \[
+        c_i > c_i^n
+    \]
+    \item The overrun amount is:
+    \[
+        c_i - c_i^n
+    \]
+\end{itemize}
+
+\section*{Motivation from Visual Tracking}
+
+\begin{itemize}
+    \item The main paper motivates the problem using visual tracking.
+    \item A vision task may normally search only a small predicted image window.
+    \item If the object is found in this small window, the task finishes quickly.
+    \item If the object is not found, the search area must be expanded.
+    \item Searching a larger area takes more computation time.
+    \item This creates a task with:
+    \begin{itemize}
+        \item short normal execution time,
+        \item occasional long execution time,
+        \item large WCET.
+    \end{itemize}
+    \item Similar situations occur in:
+    \begin{itemize}
+        \item robotics,
+        \item radar tracking,
+        \item autonomous systems,
+        \item sensor-based control systems.
+    \end{itemize}
+\end{itemize}
+
+\section*{Core Technical Idea}
+
+\begin{itemize}
+    \item Do not always schedule tasks only according to WCET.
+    \item Use normal execution time to allow higher control frequencies.
+    \item Use WCET information to guarantee safety.
+    \item Use bandwidth reservation to prevent one task from using too much CPU time.
+    \item Use deadline postponement to handle extra execution time.
+    \item Use server-based scheduling to isolate the effect of overruns.
+\end{itemize}
+
+\section*{Important Terms}
+
+\begin{itemize}
+    \item \textbf{Hard real-time task:} a task where missing a deadline is unacceptable.
+    \item \textbf{WCET:} worst-case execution time.
+    \item \textbf{Normal computation time:} typical runtime of the task.
+    \item \textbf{Execution overrun:} task exceeds expected or reserved execution time.
+    \item \textbf{EDF:} Earliest Deadline First scheduling.
+    \item \textbf{CBS:} Constant Bandwidth Server.
+    \item \textbf{CBShd:} CBS extension for hard-deadline overrun handling.
+    \item \textbf{PLI:} Performance Loss Index.
+    \item \textbf{Temporal isolation:} preventing one task from disturbing other tasks too much.
+\end{itemize}
+
+\section*{Mathematical Model}
+
+\begin{itemize}
+    \item Each control task can be modeled as:
+    \[
+        \tau_i(WCET_i, c_i^n, f_i^{min}, \Delta J_i(f_i))
+    \]
+    \item $WCET_i$: worst-case execution time.
+    \item $c_i^n$: normal computation time.
+    \item $f_i^{min}$: minimum allowed frequency.
+    \item $\Delta J_i(f_i)$: performance loss index.
+\end{itemize}
+
+\section*{Utilization}
+
+\begin{itemize}
+    \item Task utilization can be written as:
+    \[
+        U_i = C_i f_i
+    \]
+    \item Total utilization:
+    \[
+        U = \sum_{i=1}^{n} U_i
+    \]
+    \item For EDF on one processor, the task set is usually schedulable if:
+    \[
+        \sum_{i=1}^{n} U_i \leq 1
+    \]
+\end{itemize}
+
+\section*{Performance Loss Index}
+
+\begin{itemize}
+    \item The paper models performance loss as:
+    \[
+        \Delta J_i(f_i) = \alpha_i e^{-\beta_i f_i}
+    \]
+    \item $f_i$: task frequency.
+    \item $\alpha_i$: magnitude coefficient.
+    \item $\beta_i$: decay rate.
+    \item Higher frequency usually reduces performance loss.
+    \item Higher frequency also increases CPU usage.
+    \item The total performance loss is:
+    \[
+        \Delta J(f_1,\ldots,f_n) = \sum_i w_i \Delta J_i(f_i)
+    \]
+\end{itemize}
+
+\section*{CBS and CBShd}
+
+\begin{itemize}
+    \item CBS assigns each task a server budget and server period:
+    \[
+        (Q_s, T_s)
+    \]
+    \item The server bandwidth is:
+    \[
+        U_s = \frac{Q_s}{T_s}
+    \]
+    \item CBS limits how much processor time a task can consume.
+    \item If the task exhausts its budget, the deadline is postponed.
+    \item CBShd improves CBS for hard-deadline tasks.
+    \item CBShd avoids postponing deadlines too far when the remaining overrun is small.
+\end{itemize}
+
+\section*{Assumptions}
+
+\begin{itemize}
+    \item Tasks are periodic control tasks.
+    \item WCET is known or can be estimated.
+    \item Normal execution time is known or measured.
+    \item Minimum safe task frequency is known.
+    \item Overruns are bounded by WCET.
+    \item The system uses EDF or a compatible server-based scheduler.
+    \item Remaining computation time can be estimated.
+\end{itemize}
+
+\section*{Limitations}
+
+\begin{itemize}
+    \item WCET is difficult to estimate on modern processors.
+    \item Normal execution time depends on input data.
+    \item Server management introduces runtime overhead.
+    \item Smaller budgets improve precision but increase scheduling overhead.
+    \item Implementation is easier in a real-time kernel than in a normal desktop operating system.
+\end{itemize}
+
+\section*{Open Questions}
+
+\begin{itemize}
+    \item How accurately can WCET be measured in a student implementation?
+    \item Should the final paper focus more on CBS/CBShd theory or the implementation example?
+    \item Is a Python simulation acceptable as an implementation demonstration?
+    \item How should the implementation distinguish normal cases, overruns, and worst cases?
+    \item How much mathematical detail should be included in the final 5-page paper?
+\end{itemize}
+
+\end{document}
