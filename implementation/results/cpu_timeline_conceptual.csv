@@ -1,0 +1,19 @@
+strategy,task,start_ms,duration_ms,end_ms
+NormalOnly,Image task,0.0,7.795999999999914,7.795999999999914
+NormalOnly,Other tasks delayed,7.795999999999914,0.7,8.495999999999913
+WCET,Image task,0.0,7.795999999999914,7.795999999999914
+WCET,Other tasks,7.795999999999914,0.7,8.495999999999913
+WCET,Unused WCET reservation,8.495999999999913,5.531860000000092,14.027860000000006
+CBS-inspired,Image normal budget,0.0,0.5,0.5
+CBS-inspired,Other tasks,0.5,0.7,1.2
+CBS-inspired,CBS budget used,1.2,2.0,3.2
+CBS-inspired,CBS budget used,3.25,2.0,5.25
+CBS-inspired,CBS budget used,5.3,2.0,7.3
+CBS-inspired,CBS budget used,7.35,1.295999999999914,8.645999999999914
+CBS-inspired,CBS unused final budget,8.645999999999914,0.7040000000000859,9.35
+CBShd-inspired,Image normal budget,0.0,0.5,0.5
+CBShd-inspired,Other tasks,0.5,0.7,1.2
+CBShd-inspired,CBShd precise work,1.2,2.0,3.2
+CBShd-inspired,CBShd precise work,3.25,2.0,5.25
+CBShd-inspired,CBShd precise work,5.3,2.0,7.3
+CBShd-inspired,CBShd precise work,7.35,1.295999999999914,8.645999999999914
