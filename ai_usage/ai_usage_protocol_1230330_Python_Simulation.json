@@ -1,0 +1,106 @@
+{
+  "protocol_version": "0.2",
+  "student_id": "1230330",
+  "course": "Embedded A",
+  "milestone": "Python Simulation",
+  "topic": "Handeling Overuns",
+  "entries": [
+    {
+      "id": "e-6f11b6aa",
+      "timestamp": "2026-06-23T11:11:06+02:00",
+      "parent_id": null,
+      "objective": "Creat a simulation where Overruns can be detected and represented graphically.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5"
+      },
+      "prompt": "I am doing a Project on Handling Overruns in RTS. Using the attatched main source, please give me a step by step guide on creating a small implimentaion where we can compare the differences between the different overrun Handlers.",
+      "ai_output_summary": "It gave me 7 different steps all deatailing, what I should create in order to make 3 python documents and run them in a virtual environment (venv).",
+      "verification": {
+        "actions": [
+          "I checked to see if the values and differences between results and outcomes were realistic and made sence to logicaly and alligned with what the topic describes as overruns and how the different handlers compare in all my sources."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The data was too scattered and didnt show clearly how each Handler works, I wanted a detailed close up gragh of each Handler and how they work, and I also wanted to run three seperate itterations of the same test using different handlers and not just one test and compare what different handlers would do with the Overruns in an unhandled system."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "",
+        "usage_type": "code-generation",
+        "direct_text_reused": true
+      },
+      "reflection": "That I neaded to be more specific with what I wanted, but ait also tought me some python skills and how to simulate in a (venv), and that I needed to build more on my current outcome in order get the desired outcome that I can graphically use to explain my topic adiquately."
+    },
+    {
+      "id": "e-637655db",
+      "timestamp": "2026-06-23T11:11:06+02:00",
+      "parent_id": null,
+      "objective": "Creating a more detailed plot of different processes being scheduled and handeled using overrun handlers.",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5"
+      },
+      "prompt": "I dont like this previous implimentation i feel like its not clear and sufficient. I want to make a more realistic implimentation where I can see how the tasks are being delayed and scheduled for later untill completion.",
+      "ai_output_summary": "The AI gave me some suggestions and new code and eventualy the whole simulation was run again and new graphs were plotted.",
+      "verification": {
+        "actions": [
+          "I checked at first so see if the result was understandable for the human brain and if it helped me to get closer to my desired goal of showing how handlers work in real time"
+        ],
+        "level": "plausibility-check"
+      },
+      "evaluation": {
+        "status": "rejected",
+        "issues": [
+          "We had way to manny processes, 60+ overruns and for each process we had a different colour and we also simulated other unknown jobs that the cpu also needed to handle not part of the actual simulation processes and this was way too confusing and complicated with everything being shown and hadled in an EDF way."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": false,
+        "section": "",
+        "usage_type": "other",
+        "direct_text_reused": false
+      },
+      "reflection": "We needed to isolate one overrun proccess and graphically show how the different handlers would handle this single case"
+    },
+    {
+      "id": "e-25a2a57a",
+      "timestamp": "2026-06-23T11:11:06+02:00",
+      "parent_id": null,
+      "objective": "Isolate a singe overrun process and simulate how the different Hndelers would handle the task",
+      "ai_tool": {
+        "name": "ChatGPT",
+        "model": "GPT-5.5"
+      },
+      "prompt": "Please assist me step by step in writing python code where we can choose only a single frame from the CSV file where we have recorded data and show how the different handelers would handle this overruning process.",
+      "ai_output_summary": "I was given multiple steps on how to code the platting of a single frame/process for the different handlers.",
+      "verification": {
+        "actions": [
+          "I checked the main source and secondary sources that the how the overrun handlers were being represented made sence and was sufficient for graphical representations."
+        ],
+        "level": "multi-source-validation"
+      },
+      "evaluation": {
+        "status": "partially-accepted",
+        "issues": [
+          "The graugh did not 100% show the WCET correctly it had other processes running before the end and the CBS/CBShd was not shown in a realistic manner. The CPU budget was incorrectly allocated for the next itterations of the task and the task ended in 7.8ms where it would need more time than its original run time to execute, becaue it is only given 0.5ms of cpu time and other tasks are meant to be simulated inbetween."
+        ],
+        "usefulness": "medium"
+      },
+      "integration": {
+        "used_in_work": true,
+        "section": "Presentation",
+        "usage_type": "comparison-structuring",
+        "direct_text_reused": false
+      },
+      "reflection": "I leaned and understood a lot more about this topic and my understanding grew a lot. I would still use this diagram in my presentation, however I would explain the flaws and to show my understanding and aslo it was not meant to be perfectly accurate, just good enough to pass the knowledge to the audience of how this works and what the radeoffs are"
+    }
+  ],
+  "exported_at": "2026-06-23T11:11:06+02:00"
+}
